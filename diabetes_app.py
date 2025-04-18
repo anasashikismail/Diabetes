@@ -11,7 +11,7 @@ st.set_page_config(page_title="Diabetes Predictor", page_icon="🩺")
 st.title("Diabetes Prediction App")
 st.markdown("""
 This app predicts the likelihood of diabetes based on health metrics.
-Adjust the sliders and click 'Predict' to see the result.
+Adjust the options and click 'Predict' to see the result.
 """)
 
 # Load and preprocess data
@@ -20,8 +20,11 @@ def load_data():
     url = "https://raw.githubusercontent.com/plotly/datasets/master/diabetes.csv"
     df = pd.read_csv(url)
     
+    # Replace 0s with NaN in critical columns
     cols_with_zeros = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
     df[cols_with_zeros] = df[cols_with_zeros].replace(0, np.nan)
+    
+    # Fill missing values with median
     df.fillna(df.median(numeric_only=True), inplace=True)
     
     return df
@@ -40,37 +43,59 @@ def train_model():
 
 model = train_model()
 
-# Input section on main page (no sidebar)
-st.header("👤 Patient Details")
-col1, col2 = st.columns(2)
+# Input widgets
+st.header("Patient Details")
 
-with col1:
-    pregnancies = st.slider("Pregnancies", 0, 17, 2)
-    blood_pressure = st.slider("Blood Pressure (mmHg)", 40, 120, 70)
-    bmi = st.slider("BMI", 10.0, 60.0, 25.0)
-    age = st.slider("Age", 21, 100, 30)
+pregnancies = st.slider("Pregnancies", 0, 17, 2)
+glucose = st.slider("Glucose Level (mg/dL)", 50, 200, 120)
+blood_pressure = st.slider("Blood Pressure (mmHg)", 40, 120, 70)
+skin_thickness = st.slider("Skin Thickness (mm)", 0, 99, 20)
+insulin = st.slider("Insulin Level (IU/mL)", 0, 846, 80)
+bmi = st.slider("BMI", 10.0, 60.0, 25.0)
+age = st.slider("Age", 21, 100, 30)
 
-with col2:
-    glucose = st.slider("Glucose Level (mg/dL)", 50, 200, 120)
-    skin_thickness = st.slider("Skin Thickness (mm)", 0, 99, 20)
-    insulin = st.slider("Insulin Level (IU/mL)", 0, 846, 80)
-    dpf = st.slider("Diabetes Pedigree Function", 0.08, 2.5, 0.5)
+# Replace slider with radio buttons for Diabetes Pedigree Function
+st.markdown("### Family History of Diabetes")
+family_history = st.radio(
+    "Select your family history level:",
+    [
+        "No family history",
+        "Some relatives (uncle, aunt, grandparents)",
+        "Parents or siblings"
+    ]
+)
 
+# Mapping user-friendly options to DPF values
+dpf_mapping = {
+    "No family history": 0.2,
+    "Some relatives (uncle, aunt, grandparents)": 0.6,
+    "Parents or siblings": 1.2
+}
+dpf = dpf_mapping[family_history]
+
+st.info("""
+**What is Diabetes Pedigree Function?**  
+This score estimates genetic risk based on family history.  
+Higher means closer relatives have diabetes.
+""")
+
+# Prediction button
 if st.button("Predict Diabetes Risk"):
     input_data = [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]]
     prediction = model.predict(input_data)[0]
     prediction_proba = model.predict_proba(input_data)[0]
-
-    st.subheader("🧾 Prediction Result")
+    
+    st.subheader("Prediction Result")
+    
     if prediction == 1:
         st.error("⚠️ High risk of diabetes")
     else:
         st.success("✅ Low risk of diabetes")
-
-    st.write(f"**Probability of diabetes:** `{prediction_proba[1]*100:.2f}%`")
-
+    
+    st.write(f"Probability of diabetes: {prediction_proba[1]*100:.2f}%")
+    
     # Show feature importance
-    st.subheader("📊 Key Factors Influencing Prediction")
+    st.subheader("Key Factors Influencing Prediction")
     coefficients = pd.DataFrame({
         'Feature': df.columns[:-1],
         'Importance': model.coef_[0]
@@ -78,20 +103,20 @@ if st.button("Predict Diabetes Risk"):
     
     st.bar_chart(coefficients.set_index('Feature'))
 
-# Dataset toggle options
+# Show dataset info
 if st.checkbox("Show raw data"):
-    st.subheader("📂 Diabetes Dataset")
+    st.subheader("Diabetes Dataset")
     st.write(df)
-
+    
 if st.checkbox("Show statistics"):
-    st.subheader("📈 Data Statistics")
+    st.subheader("Data Statistics")
     st.write(df.describe())
 
-# Instructions
+# How to use
 st.markdown("""
 ---
-### ℹ️ How to use:
-1. Adjust the sliders with patient info  
-2. Click **Predict Diabetes Risk**  
-3. See the prediction and probabilities  
+**How to use:**
+1. Fill out the patient info
+2. Click 'Predict Diabetes Risk'
+3. Review the result
 """)
