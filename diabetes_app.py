@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 st.set_page_config(page_title="Diabetes Predictor", page_icon="🩺")
 
 # Title and description
-st.title("Diabetes Prediction App")
+st.title("Diabetes Prediction Web App")
 st.markdown("""
 This app predicts the likelihood of diabetes based on health metrics.
 Adjust the options and click 'Predict' to see the result.
