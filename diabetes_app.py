@@ -44,7 +44,7 @@ def train_model():
 model = train_model()
 
 # Input widgets
-st.header("Patient Details")
+st.header("👤 Patient Details")
 
 pregnancies = st.slider("Pregnancies", 0, 17, 2)
 glucose = st.slider("Glucose Level (mg/dL)", 50, 200, 120)
