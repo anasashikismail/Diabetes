@@ -1,4 +1,4 @@
-# 🩺 Diabetes Prediction Web App
+# 🩺 Diabetes Prediction Web App [![DOI](https://zenodo.org/badge/968558563.svg)](https://doi.org/10.5281/zenodo.15244653)
 
 A simple, interactive web application built using **Streamlit** that predicts the likelihood of diabetes based on user-input health metrics using **Logistic Regression**.
 
@@ -71,6 +71,11 @@ streamlit run diabetes_app.py
 ## 📃 License
 
 MIT License – use it, build on it, share it!
+
+## 📕 Citation
+For proper citation and reference to this work, please use the DOI provided below:
+
+[![DOI](https://zenodo.org/badge/968558563.svg)](https://doi.org/10.5281/zenodo.15244653)
 
 
 
