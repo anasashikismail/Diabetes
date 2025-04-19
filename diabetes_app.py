@@ -3,20 +3,11 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-import time  # For simulating progress
-import plotly.graph_objects as go  # Ensure this import is correct
+import time  
+import plotly.graph_objects as go 
 
-# Set page config - must be the first Streamlit command
+# Set page config 
 st.set_page_config(page_title="Diabetes Predictor", page_icon="🩺")
-
-# Inject custom CSS to hide the link icon next to headers
-st.markdown("""
-    <style>
-        .css-1v3fvcr a {
-            display: none !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
 
 # Title and description
 st.title("Diabetes Prediction Web App")
@@ -59,7 +50,7 @@ st.header("👤 Patient Details")
 
 pregnancies = st.slider("Pregnancies", 0, 17, 2)
 glucose = st.slider("Glucose Level (mg/dL)", 50, 200, 120)
-blood_pressure = st.slider("Diastolic blood pressure (mmHg)", 40, 120, 70)
+blood_pressure = st.slider("Blood Pressure (mmHg)", 40, 120, 70)
 bmi = st.slider("BMI", 10.0, 60.0, 25.0)
 insulin = st.slider("Insulin Level (IU/mL)", 0, 846, 80)
 age = st.slider("Age", 21, 100, 30)
@@ -100,7 +91,22 @@ dpf = dpf_mapping[family_history]
 
 # Explanation of DPF
 st.markdown("""
-<div style="background-color: #1E3A8A; padding: 10px; border-radius: 5px;">
+    <style>
+        /* Style the DPF text box with a blue background and white text */
+        .dpf-box {
+            background-color: #1E3A8A; /* Blue background */
+            color: white !important; /* White text */
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
+# Applying the class to the DPF description text
+
+st.markdown("""
+<div class="dpf-box">
     <strong>What is Diabetes Pedigree Function (DPF)?</strong><br>
     This score estimates genetic risk based on family history.<br>
     A higher score means closer relatives (like parents or siblings) have diabetes.<br>
@@ -108,9 +114,10 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
+
 
 # Prediction button
+st.markdown("<br>", unsafe_allow_html=True)
 if st.button("Predict Diabetes Risk"):
     # Initialize progress bar
     progress_bar = st.progress(0)
