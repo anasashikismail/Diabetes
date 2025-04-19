@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 st.set_page_config(page_title="Diabetes Predictor", page_icon="🩺")
 
 # Title and description
-st.title("Diabetes Prediction Web App")
+st.title("🩺 Diabetes Prediction Web App")
 st.markdown("""
 This web app predicts the likelihood of diabetes based on health metrics.<br>
 Adjust the options and click 'Predict' to see the result.
@@ -41,9 +41,9 @@ def train_model():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
-    return model
+    return model, X_test, y_test
 
-model = train_model()
+model, X_test, y_test = train_model()
 
 # Input widgets
 st.header("👤 Patient Details")
@@ -71,7 +71,7 @@ if show_skin_thickness_warning:
     skin_thickness = st.slider("Skin Thickness (mm)", 0.0, 99.0, skin_thickness)
 
 # Replace slider with radio buttons for Diabetes Pedigree Function
-st.markdown("### Family History of Diabetes - A Questionnaire to determine Diabetes Pedigree Function (DPF) ")
+st.markdown("### 🗒️ Family History of Diabetes - A Questionnaire to determine Diabetes Pedigree Function (DPF) ")
 family_history = st.radio(
     "Select your family history level:",
     [
@@ -102,9 +102,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 # Applying the class to the DPF description text
-
 st.markdown("""
 <div class="dpf-box">
     <strong>What is Diabetes Pedigree Function (DPF)?</strong><br>
@@ -114,8 +112,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
-
 # Prediction button
 st.markdown("<br>", unsafe_allow_html=True)
 if st.button("Predict Diabetes Risk"):
@@ -124,7 +120,7 @@ if st.button("Predict Diabetes Risk"):
     
     # Simulate the process of model computation
     for i in range(1, 101):
-        time.sleep(0.001)  # Sleep to simulate processing
+        time.sleep(0.001)
         progress_bar.progress(i)
     
     # Run the prediction after the progress bar reaches 100%
@@ -142,13 +138,12 @@ if st.button("Predict Diabetes Risk"):
     
     st.write(f"Probability of diabetes: {prediction_proba[1]*100:.2f}%")
 
-
-  # Show model confidence using gauge chart
+    # Show model confidence using gauge chart
     st.subheader("Model Confidence")
     try:
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
-            value=prediction_proba[1] * 100,  # Multiplying by 100 to make it percentage
+            value=prediction_proba[1] * 100,
             title={'text': "Diabetes Risk Confidence (%)"},
             gauge={'axis': {'range': [None, 100]},
                    'bar': {'color': "red"},
@@ -163,7 +158,6 @@ if st.button("Predict Diabetes Risk"):
         st.plotly_chart(fig)
     except Exception as e:
         st.error(f"Error generating the chart: {e}")
-
 
     # Show feature importance
     st.subheader("Key Factors Influencing Prediction")
@@ -183,8 +177,20 @@ if st.checkbox("Show statistics"):
     st.subheader("Data Statistics")
     st.write(df.describe())
 
+# Add metrics section
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+
+if st.checkbox("Show Logistic Regression Metrics"):
+    y_pred = model.predict(X_test)
+    st.subheader("Logistic Regression Metrics")
+    st.write(f"**Accuracy**   : {accuracy_score(y_test, y_pred):.4f}")
+    st.write(f"**Precision**  : {precision_score(y_test, y_pred):.4f}")
+    st.write(f"**Recall**     : {recall_score(y_test, y_pred):.4f}")
+    st.write(f"**F1 Score**   : {f1_score(y_test, y_pred):.4f}")
+    st.write(f"**AUC-ROC**    : {roc_auc_score(y_test, model.predict_proba(X_test)[:,1]):.4f}")
+
 st.markdown("""
-### Reference
+### 📚 Reference
 This project uses the Pima Indians Diabetes Dataset from Plotly.  
 [Plotly Diabetes Dataset](https://raw.githubusercontent.com/plotly/datasets/master/diabetes.csv)
 """)
