@@ -59,7 +59,7 @@ st.header("👤 Patient Details")
 
 pregnancies = st.slider("Pregnancies", 0, 17, 2)
 glucose = st.slider("Glucose Level (mg/dL)", 50, 200, 120)
-blood_pressure = st.slider("Blood Pressure (mmHg)", 40, 120, 70)
+blood_pressure = st.slider("Diastolic blood pressure (mmHg)", 40, 120, 70)
 bmi = st.slider("BMI", 10.0, 60.0, 25.0)
 insulin = st.slider("Insulin Level (IU/mL)", 0, 846, 80)
 age = st.slider("Age", 21, 100, 30)
