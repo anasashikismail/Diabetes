@@ -3,14 +3,23 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-import time  
-import plotly.graph_objects as go 
+import time  # For simulating progress
+import plotly.graph_objects as go  # Ensure this import is correct
 
-# Set page config 
+# Set page config - must be the first Streamlit command
 st.set_page_config(page_title="Diabetes Predictor", page_icon="🩺")
 
+# Inject custom CSS to hide the link icon next to headers
+st.markdown("""
+    <style>
+        .css-1v3fvcr a {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Title and description
-st.title("🩺 Diabetes Prediction Web App")
+st.title("Diabetes Prediction Web App")
 st.markdown("""
 This web app predicts the likelihood of diabetes based on health metrics.<br>
 Adjust the options and click 'Predict' to see the result.
@@ -50,7 +59,7 @@ st.header("👤 Patient Details")
 
 pregnancies = st.slider("Pregnancies", 0, 17, 2)
 glucose = st.slider("Glucose Level (mg/dL)", 50, 200, 120)
-blood_pressure = st.slider("Blood Pressure (mmHg)", 40, 120, 70)
+blood_pressure = st.slider("Diastolic Blood Pressure (mmHg)", 40, 120, 70)
 bmi = st.slider("BMI", 10.0, 60.0, 25.0)
 insulin = st.slider("Insulin Level (IU/mL)", 0, 846, 80)
 age = st.slider("Age", 21, 100, 30)
